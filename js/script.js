@@ -34,7 +34,7 @@ if (localItem) {
 console.log(window.location.href)
 console.log(sepet.length)
 
-if (window.location.href == 'https://rainclover8.github.io/LastSepet/index.html') {
+if (window.location.href == 'https://rainclover8.github.io/LastSepet/index.html' || window.location.href == "https://rainclover8.github.io/LastSepet/index.html") {
     const row = document.querySelector('.row')
     const input = document.getElementById('input')
 

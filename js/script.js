@@ -5,7 +5,9 @@ const span = document.querySelector('#span')
 let sepet = []
 
 let localItem = localStorage.getItem('sepet')
+
 let toplamSepet = 0
+// let toplamSepet = ''
 
 
 if (localItem) {
@@ -17,9 +19,14 @@ if (localItem) {
 
     })
 
-    // console.log(toplamSepet)
+    if(sepet.length == 0){
+        span.textContent = ''
 
-    span.textContent = toplamSepet
+    }else {
+        span.textContent = toplamSepet
+    }
+
+    // console.log(toplamSepet)
 }
 // localStorage.clear()
 // console.log(urunler)
@@ -43,8 +50,9 @@ if (window.location.href == 'http://127.0.0.1:5500/index.html') {
             // console.log(col[i].firstChild.firstChild.nextSibling.firstChild.textContent);
             let urunAdi = col[i].firstChild.firstChild.nextSibling.firstChild.textContent.toLocaleLowerCase()
 
+            let urunAciklama = col[i].firstChild.firstChild.nextSibling.firstChild.nextSibling.textContent.toLocaleLowerCase()
             // console.log(urunAdi.indexOf(KullaniciDeger))
-            if(urunAdi.indexOf(KullaniciDeger) != -1){
+            if(urunAdi.indexOf(KullaniciDeger) != -1 || (urunAciklama.indexOf(KullaniciDeger)) != -1){
                 col[i].style.display ='flex'
             }else{
                 col[i].style.display ='none'
@@ -178,7 +186,7 @@ if (window.location.href == 'http://127.0.0.1:5500/index.html') {
 
             const price = document.createElement('p')
             let urununFiyati = urun.fiyat * urun.quantity
-            price.textContent = urununFiyati + '$'
+            price.textContent = urununFiyati.toFixed(2) + '$'
             price.style.fontWeight = 'bold'
 
             const kacTane = document.createElement('div')
@@ -201,6 +209,9 @@ if (window.location.href == 'http://127.0.0.1:5500/index.html') {
                 if (urun.quantity >= 1) {
                     urun.quantity--
                     sayi.textContent = urun.quantity
+                    price.textContent = (urun.fiyat * urun.quantity).toFixed(2) + '$'
+                    localStorage.setItem('sepet', JSON.stringify(sepet))
+
 
 
                     if (urun.quantity == 0) {
@@ -216,16 +227,57 @@ if (window.location.href == 'http://127.0.0.1:5500/index.html') {
                         //! LocalStorage'dan silme
 
                     }
+                    let toplam = 0
+                    sepet.forEach(e => {
+                        toplam += e.quantity
+
+                    })
+
+                    if(sepet.length == 0){
+                        span.textContent = ''
+
+                    }else {
+                        span.textContent = toplam
+                    }
                 }
+                if (sepet.length < 1) {
+                    const h4 = document.createElement('h4')
+                    h4.textContent = 'Sepetinizde ürün kalmamıştır...'
+                   
+                    container.append(h4)
+                    container.removeChild(hr)
+                    }
+                    let toplamSepetFiyati = 0
+                    sepet.forEach(e => {
+                        toplamSepetFiyati += e.fiyat * e.quantity
+                        
+                    })
+                    sepetFiyat.textContent = toplamSepetFiyati.toFixed(2) + '$'
+                    
             })
 
             arttirBtn.addEventListener('click', () => {
                 urun.quantity++
                 sayi.textContent = urun.quantity
+                price.textContent = (urun.fiyat * urun.quantity).toFixed(2) + '$'
+                localStorage.setItem('sepet', JSON.stringify(sepet))
+
+                let toplam = 0
+                sepet.forEach(e => {
+                    toplam += e.quantity
+
+                })
+                span.textContent = toplam
 
                 // urun.fiyat += urun.quantity
                 // price.textContent = urun.fiyat
+                let toplamSepetFiyati = 0
 
+                sepet.forEach(e => {
+                    toplamSepetFiyati += e.fiyat * e.quantity
+                    
+                })
+                sepetFiyat.textContent = toplamSepetFiyati.toFixed(2) + '$'
             })
 
             imgDiv.append(img)
@@ -241,7 +293,38 @@ if (window.location.href == 'http://127.0.0.1:5500/index.html') {
 
             container.append(div)
 
+           
+
+            
+
         })
+
+        const hr = document.createElement('hr')
+        container.append(hr)
+
+        const fiyatDiv = document.createElement('div')
+        fiyatDiv.classList.add('w-100' , 'd-flex', 'justify-content-around')
+
+        let sepetFiyat = document.createElement('h3')
+
+        let toplamSepetFiyati = 0
+        sepet.forEach(e => {
+            toplamSepetFiyati += e.fiyat * e.quantity
+            
+        })
+        sepetFiyat.textContent = toplamSepetFiyati.toFixed(2) + '$'
+        
+        const sepetBtn = document.createElement('button')
+        sepetBtn.classList.add('btn','btn-success','w-50')
+        sepetBtn.textContent = 'Satın Al'
+        
+
+
+        fiyatDiv.append(sepetFiyat)
+        fiyatDiv.append(sepetBtn)
+
+        container.append(fiyatDiv)
+
 
     }
 
